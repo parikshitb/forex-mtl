@@ -3,6 +3,7 @@ package rates
 
 import cats.effect.Sync
 import cats.syntax.flatMap._
+import forex.http.rates.Converters.GetApiResponseOps
 import forex.http.rates.QueryParams.{FromQueryParam, ToQueryParam}
 import forex.programs.RatesProgram
 import forex.programs.rates.{Protocol => RatesProgramProtocol}
@@ -20,7 +21,7 @@ class RatesHttpRoutes[F[_]: Sync](rates: RatesProgram[F]) extends Http4sDsl[F] {
     case GET -> Root :? FromQueryParam(from) +& ToQueryParam(to) =>
       rates
         .get(RatesProgramProtocol.GetRatesRequest(from, to))
-        .flatMap { rate => Ok(rate) }
+        .flatMap { rate => Ok(rate.asGetApiResponse) }
   }
 
   val routes: HttpRoutes[F] = Router(

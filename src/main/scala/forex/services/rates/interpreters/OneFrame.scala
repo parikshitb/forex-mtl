@@ -6,15 +6,16 @@ import forex.services.rates.{Algebra, errors}
 import org.http4s.{Header, Headers, Request, Uri}
 import org.http4s.client.Client
 import org.http4s.Method.GET
+import forex.services.rates.Interpreters.rateEntityDecoder
 class OneFrame[F[_]: Concurrent](client: Client[F]) extends Algebra[F]{
-  override def getExchangeRate(pair: Rate.Pair): F[String] ={
+  override def getExchangeRate(pair: Rate.Pair): F[Rate] ={
     val request =
       Request[F](
         method = GET,
         uri = Uri.unsafeFromString(s"http://0.0.0.0:8080/rates?pair=${pair.from}${pair.to}"),
         headers = Headers.of(Header("token", "10dc303535874aeccc86a8251e6992f5"))
       )
-    client.expect[String](request)
+    client.expect[Rate](request)
   }
 
 
