@@ -5,4 +5,6 @@ import errors._
 
 trait Algebra[F[_]] {
   def get(pair: Rate.Pair): F[Error Either Rate]
+  def getExchangeRate(pair: Rate.Pair): F[String]
+
 }
